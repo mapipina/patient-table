@@ -3,13 +3,10 @@ import SearchComponent from "./SearchComponent";
 
 const _ = require("lodash");
 
-// eslint-disable-next-line no-unused-expressions
-("use strict");
-
 class SearchContainer extends Component {
   state = {
     patientID: 0,
-    patientData: {}
+    patientData: []
   };
 
   componentDidMount() {
@@ -18,11 +15,15 @@ class SearchContainer extends Component {
 
   // Checking to see if patientData has changed. If so, notify the parent container in order to update Table with new data
   componentDidUpdate(_prevProps, prevState) {
-    const { patientData } = this.state;
-    const { sendData } = this.props;
+    const { patientData, patientID } = this.state;
+    const { sendData, sendID } = this.props;
     // Lodash makes it easy to loop through objects and compare values
     if (!_.isEqual(prevState.patientData, patientData)) {
       sendData(patientData);
+    }
+
+    if (!_.isEqual(prevState.patientID, patientID)) {
+      sendID(patientID);
     }
   }
 
