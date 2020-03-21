@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import NameComponent from "./NameComponent";
+import "../styling/Name.css";
+const { fetchData } = require("../utils");
+const { patientResource } = require("../constants");
 
 const _ = require("lodash");
 
@@ -25,33 +28,27 @@ class NameContainer extends Component {
     }
   }
 
-  fetchPatientDemographics() {
+  async fetchPatientDemographics() {
     const { patientID } = this.props;
 
-    fetch(
-      `https://fhir-open.sandboxcerner.com/dstu2/0b8a0111-e8e6-4c26-a91c-5069cbc6b1ca/Patient/${patientID}`,
-      { headers: { Accept: "application/json+fhir" } }
-    )
-      .then(res => res.json())
-      .then(result => {
-        const patientName = result.name[0].text;
-        const patientDOB = result.birthDate;
-        const patientGender = result.gender;
-        this.setState({ patientName, patientDOB, patientGender });
-      })
-      .catch(error => {
-        console.error(`Error: ${error}`);
-      });
+    await fetchData(patientResource, patientID).then(result => {
+      const patientName = result.name[0].text;
+      const patientDOB = result.birthDate;
+      const patientGender = result.gender;
+      this.setState({ patientName, patientDOB, patientGender });
+    });
   }
 
   render() {
     const { patientName, patientGender, patientDOB } = this.state;
     return (
-      <NameComponent
-        patientName={patientName}
-        patientGender={patientGender}
-        patientDOB={patientDOB}
-      />
+      <div className="name">
+        <NameComponent
+          patientName={patientName}
+          patientGender={patientGender}
+          patientDOB={patientDOB}
+        />
+      </div>
     );
   }
 }

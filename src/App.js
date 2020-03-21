@@ -8,6 +8,7 @@ import TableContainer from "./components/TableContainer";
 function App() {
   const [patientData, setPatientData] = useState([]);
   const [patientID, setPatientID] = useState(0);
+  const [isFetching, setFetchingStatus] = useState(false);
 
   function getPatientData(patientData) {
     setPatientData(patientData);
@@ -17,12 +18,22 @@ function App() {
     setPatientID(patientID);
   }
 
+  function checkFetchStatus(isFetching) {
+    setFetchingStatus(isFetching);
+  }
+
   return (
     <div className="App">
       <header className="App-header">Patient Table</header>
-      <SearchContainer sendData={getPatientData} sendID={sendID} />
-      <NameContainer patientID={patientID} />
-      <TableContainer patientData={patientData} />
+      <div className="App__childContainer">
+        <SearchContainer
+          sendData={getPatientData}
+          sendID={sendID}
+          checkFetchStatus={checkFetchStatus}
+        />
+        {patientID === 0 ? "" : <NameContainer patientID={patientID} />}
+        <TableContainer isFetching={isFetching} patientData={patientData} />
+      </div>
     </div>
   );
 }

@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import SearchComponent from "./SearchComponent";
+import "../styling/Search.css";
+const { fetchData } = require("../utils");
+const { conditionResource } = require("../constants");
 
 const _ = require("lodash");
 
@@ -8,10 +11,6 @@ class SearchContainer extends Component {
     patientID: 0,
     patientData: []
   };
-
-  componentDidMount() {
-    // console.log(this.props.sendData);
-  }
 
   // Checking to see if patientData has changed. If so, notify the parent container in order to update Table with new data
   componentDidUpdate(_prevProps, prevState) {
@@ -27,26 +26,32 @@ class SearchContainer extends Component {
     }
   }
 
+  // Updating parent container's fetch status so TableContainer loads data loading msg
   onPatientIDSubmit(patientID) {
-    this.setState({ patientID }, () => this.fetchPatientData());
+    const { checkFetchStatus } = this.props;
+    this.setState({ patientID }, () => {
+      checkFetchStatus(true);
+      this.fetchPatientData();
+    });
   }
 
-  fetchPatientData() {
-    fetch(
-      `https://fhir-open.sandboxcerner.com/dstu2/0b8a0111-e8e6-4c26-a91c-5069cbc6b1ca/Condition?patient=${this.state.patientID}`,
-      { headers: { Accept: "application/json+fhir" } }
-    )
-      .then(res => res.json())
-      .then(result => {
-        this.setState({ patientData: result.entry });
-      })
-      .catch(error => {
-        console.error(`Error: ${error}`);
+  async fetchPatientData() {
+    const { checkFetchStatus } = this.props;
+    const { patientID } = this.state;
+
+    await fetchData(conditionResource, patientID).then(result => {
+      this.setState({ patientData: result.entry }, () => {
+        checkFetchStatus(false);
       });
+    });
   }
 
   render() {
-    return <SearchComponent onSubmit={this.onPatientIDSubmit.bind(this)} />;
+    return (
+      <div className="search">
+        <SearchComponent onSubmit={this.onPatientIDSubmit.bind(this)} />
+      </div>
+    );
   }
 }
 

@@ -1,0 +1,16 @@
+.name {
+  display: flex;
+  margin: 3vh 0 1vh 15vw;
+}
+
+.name__text {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  text-align: left;
+}
+
+.name__header {
+  font-weight: bold;
+  font-size: medium;
+}

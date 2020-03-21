@@ -1,0 +1,30 @@
+.search {
+  display: flex;
+  margin: 3vh 0 1vh 15vw;
+}
+
+.search__label {
+  font-size: large;
+  font-weight: bold;
+  margin-right: 1vw;
+}
+
+.search__label > input {
+  border: none;
+  border-bottom: 1px solid black;
+  margin-left: 0.5vw;
+  padding: 2px;
+}
+
+button.search__label {
+  color: green;
+  border-color: green;
+  border-radius: 5px;
+  margin: 1vh 1vw;
+  font-size: small;
+}
+
+button.search__label:hover {
+  background-color: green;
+  color: white;
+}

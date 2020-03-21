@@ -13,11 +13,13 @@ function SearchComponent(props) {
   }
   return (
     <form onSubmit={handleSubmit}>
-      <label>
+      <label className="search__label">
         Patient ID
         <input type="text" name="patient-id" onChange={handleChange} />
       </label>
-      <input type="submit" value="Get Patient Data" />
+      <button className="search__label" type="submit">
+        Get Patient Data
+      </button>
     </form>
   );
 }

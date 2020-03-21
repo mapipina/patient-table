@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import TableComponent from "./TableComponent";
-const { tableColumns } = require("../constants");
+import "../styling/Table.css";
+
+const { conditionResource, medURL, tableColumns } = require("../constants");
 const _ = require("lodash");
 
-const CONDITION_RESOURCE = "Condition";
-const MED_URL = "https://www.ncbi.nlm.nih.gov/pubmed/?term=";
+const LOADING_MSG = "Loading table data...";
 
 class TableContainer extends Component {
   state = {
@@ -29,20 +30,31 @@ class TableContainer extends Component {
     const rowData = [];
     patientData.forEach(datum => {
       const conditionObj = datum.resource;
-      if (conditionObj.resourceType === CONDITION_RESOURCE) {
+      if (conditionObj.resourceType === conditionResource) {
         const date = conditionObj.dateRecorded;
         const condition = conditionObj.code.text;
-        const url = `${MED_URL}${condition}`;
+        const url = `${medURL}${condition.split(" ").join("+")}`;
         rowData.push({ condition, date, url });
       }
     });
 
-    this.setState({ rowData });
+    this.setState({ columnDefs: tableColumns, rowData });
   }
 
   render() {
     const { columnDefs, rowData } = this.state;
-    return <TableComponent columnDefs={columnDefs} rowData={rowData} />;
+    const { isFetching } = this.props;
+    return (
+      <div className="table">
+        {!isFetching && _.isEmpty(rowData) ? (
+          ""
+        ) : isFetching ? (
+          <div>{LOADING_MSG}</div>
+        ) : (
+          <TableComponent columnDefs={columnDefs} rowData={rowData} />
+        )}
+      </div>
+    );
   }
 }
 
